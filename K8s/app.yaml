@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: next-result-deployment
+  labels:
+    app: next-result
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: next-result
+  template:
+    metadata:
+      labels:
+        app: next-result
+    spec:
+      containers:
+      - name: next-result
+        image: irawal007/next:v1.0
+        ports:
+        - containerPort: 3000
+        env:
+        - name: PORT
+          value: "3000"
+        - name: MONGODB_URL
+          value: "mongodb://mongo-service:27017"
+        - name: SECRET
+          value: "VASCODAGAMA"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: next-result-service
+spec:
+  selector:
+    app: next-result
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 30200
+  type: NodePort
